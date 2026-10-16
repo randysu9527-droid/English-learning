@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>English 小教室｜國中英文練習</title>
+<style>
+:root{--navy:#173d65;--blue:#2c6597;--pale:#eaf4ff;--bg:#f5f8fc;--ink:#1d2c3b;--muted:#64748b;--line:#dce5ef;--green:#19734b}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Noto Sans TC",sans-serif;background:var(--bg);color:var(--ink);line-height:1.6}
+header{background:linear-gradient(135deg,#173d65,#2c6597);color:white;padding:28px 18px 24px}
+.hero{max-width:850px;margin:auto}.brand{display:flex;align-items:center;gap:14px}.logo{display:grid;place-items:center;background:#e2f2ff;color:var(--navy);width:52px;height:52px;border-radius:15px;font-size:28px}
+h1{font-size:clamp(1.45rem,4vw,2rem);margin:0}.tagline{margin:5px 0 0;color:#d9e9f8}.hero p{margin:20px 0 0}
+main{max-width:850px;margin:22px auto;padding:0 14px 36px}.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
+.tab{border:1px solid var(--line);background:white;border-radius:12px;padding:12px 6px;font-size:1rem;font-weight:700;cursor:pointer;color:var(--navy)}
+.tab.active{background:var(--navy);color:white;border-color:var(--navy)}
+.panel{background:white;border:1px solid var(--line);border-radius:18px;padding:clamp(18px,4vw,28px);box-shadow:0 5px 20px #173d650d}
+h2{font-size:1.25rem;margin:0 0 16px}.muted{color:var(--muted);font-size:.92rem}.word-card{background:#f0f6fc;border-radius:16px;padding:28px 16px;text-align:center;margin:14px 0}.word{font-size:2.3rem;font-weight:800;color:var(--navy);margin:8px 0}.meaning{font-size:1.2rem;font-weight:700;color:var(--green)}.example{margin-top:16px;font-weight:600}.translation{color:var(--muted)}
+button{font:inherit;cursor:pointer}.primary,.secondary{border-radius:11px;padding:11px 14px;font-weight:700}.primary{border:0;background:var(--navy);color:white}.primary:disabled{opacity:.4;cursor:not-allowed}.secondary{border:1px solid var(--line);background:white;color:var(--navy)}.actions{display:flex;gap:10px;margin-top:14px}.actions button{flex:1}.full{width:100%;margin-top:12px}.question{font-size:1.15rem;font-weight:750;margin:12px 0 18px}.options{display:grid;gap:10px}.option{border:1px solid var(--line);border-radius:12px;padding:12px;text-align:left;background:white;color:var(--ink)}.option:hover{border-color:var(--blue)}.option.selected{border:2px solid var(--blue);background:var(--pale)}.feedback{margin-top:14px;padding:12px;border-radius:12px;background:#f0f6fc}.correct{color:var(--green);font-weight:750}.incorrect{color:#a33b3b;font-weight:750}.hidden{display:none!important}.score{text-align:center;background:#f0f6fc;border-radius:14px;padding:25px}.score strong{font-size:2.3rem;color:var(--navy)}footer{text-align:center;color:var(--muted);font-size:.82rem;padding:16px}
+@media(max-width:480px){.tabs{gap:5px}.tab{font-size:.88rem}.actions{gap:7px}}
+</style>
+</head>
+<body>
+<header><div class="hero">
+  <div class="brand"><div class="logo" aria-hidden="true">📘</div><div><h1>English 小教室</h1><div class="tagline">Learn a little every day!</div></div></div>
+  <p>每天學一點，英文進步多一點！一起練習國中常用英文單字。</p>
+</div></header>
+<main>
+  <nav class="tabs" aria-label="學習功能">
+    <button class="tab active" data-page="words">📚 單字學習</button>
+    <button class="tab" data-page="quiz">🧠 小測驗</button>
+    <button class="tab" data-page="dialogue">💬 情境對話</button>
+  </nav>
+  <section class="panel" id="words">
+    <h2>今日單字 <span class="muted" id="word-count"></span></h2>
+    <div class="word-card">
+      <div class="muted">國中英文｜30 個研究單字</div><div class="word" id="word-en">improve</div>
+      <div id="word-details" class="hidden"><div class="meaning" id="word-zh"></div><div class="example" id="word-ex"></div><div class="translation" id="word-trans"></div></div>
+      <p class="muted" id="word-prompt">先想想看這個單字的意思！</p>
+      <button class="primary full" id="reveal">顯示中文與例句</button>
+    </div>
+    <div class="actions"><button class="secondary" id="prev-word">← 上一個</button><button class="primary" id="next-word">下一個 →</button></div>
+    <p class="muted">學習小技巧：先看英文想中文，再確認答案，最後試著自己造句。</p>
+  </section>
+  <section class="panel hidden" id="quiz">
+    <h2>單字挑戰 <span class="muted" id="quiz-count"></span></h2>
+    <div id="quiz-play"><div class="question" id="quiz-question"></div><div class="options" id="quiz-options"></div><div class="feedback hidden" id="quiz-feedback"></div><button class="primary full" id="quiz-submit" disabled>確認答案</button><button class="primary full hidden" id="quiz-next">下一題</button></div>
+    <div class="score hidden" id="quiz-result"><h2>你完成測驗了！🎉</h2><strong id="final-score"></strong><p id="score-message"></p><button class="primary" id="restart-quiz">重新測驗</button></div>
+    <p class="muted">每題 1 分。作答後會看到答案和簡單解釋。</p>
+  </section>
+  <section class="panel hidden" id="dialogue">
+    <h2>情境英文對話</h2><p class="muted">情境：到果汁店買飲料</p>
+    <div class="word-card" style="text-align:left">
+      <div class="muted">店員</div><div class="question" id="dialogue-question"></div>
+      <div class="muted">選出你會說的英文：</div><div class="options" id="dialogue-options" style="margin-top:10px"></div>
+      <div class="feedback hidden" id="dialogue-feedback"></div>
+      <button class="primary full" id="dialogue-submit" disabled>送出回答</button><button class="primary full hidden" id="dialogue-next">下一句對話</button>
+    </div>
+    <p class="muted">先選出最自然的英文，再看看提示和店員的回應。</p>
+  </section>
+  <footer>English 小教室 · 國中英文練習版</footer>
+</main>
+<script>
+const words=[{"en":"improve","zh":"改善；進步","ex":"I want to improve my English.","trans":"我想要增進我的英文。"},{"en":"decide","zh":"決定","ex":"I decided to study today.","trans":"我決定今天讀書。"},{"en":"invite","zh":"邀請","ex":"I will invite my friend.","trans":"我會邀請我的朋友。"},{"en":"prepare","zh":"準備","ex":"I prepare for the test.","trans":"我為考試做準備。"},{"en":"borrow","zh":"借入","ex":"Can I borrow your pencil?","trans":"我可以借你的鉛筆嗎？"},{"en":"explain","zh":"解釋","ex":"Can you explain this question?","trans":"你可以解釋這個問題嗎？"},{"en":"practice","zh":"練習","ex":"I practice English every day.","trans":"我每天練習英文。"},{"en":"remember","zh":"記得","ex":"Please remember my name.","trans":"請記得我的名字。"},{"en":"forget","zh":"忘記","ex":"Don't forget your homework.","trans":"不要忘記你的作業。"},{"en":"choose","zh":"選擇","ex":"You can choose one book.","trans":"你可以選一本書。"},{"en":"important","zh":"重要的","ex":"English is important.","trans":"英文很重要。"},{"en":"difficult","zh":"困難的","ex":"This question is difficult.","trans":"這個問題很困難。"},{"en":"possible","zh":"可能的","ex":"It is possible to learn every day.","trans":"每天學習是做得到的。"},{"en":"healthy","zh":"健康的","ex":"Fruit is healthy.","trans":"水果很健康。"},{"en":"popular","zh":"受歡迎的","ex":"This song is popular.","trans":"這首歌很受歡迎。"},{"en":"experience","zh":"經驗","ex":"It was a good experience.","trans":"那是一次很好的經驗。"},{"en":"information","zh":"資訊","ex":"I need more information.","trans":"我需要更多資訊。"},{"en":"environment","zh":"環境","ex":"We should protect the environment.","trans":"我們應該保護環境。"},{"en":"example","zh":"例子","ex":"Can you give me an example?","trans":"你可以給我一個例子嗎？"},{"en":"reason","zh":"原因","ex":"What is the reason?","trans":"原因是什麼？"},{"en":"future","zh":"未來","ex":"I want to be a teacher in the future.","trans":"我未來想當老師。"},{"en":"culture","zh":"文化","ex":"I want to learn about Taiwanese culture.","trans":"我想了解台灣文化。"},{"en":"activity","zh":"活動","ex":"The school activity was fun.","trans":"學校活動很有趣。"},{"en":"message","zh":"訊息","ex":"I sent her a message.","trans":"我傳了一則訊息給她。"},{"en":"continue","zh":"繼續","ex":"Please continue reading.","trans":"請繼續閱讀。"},{"en":"discover","zh":"發現","ex":"We can discover new things.","trans":"我們可以發現新事物。"},{"en":"develop","zh":"發展；培養","ex":"I want to develop good habits.","trans":"我想培養好習慣。"},{"en":"communicate","zh":"溝通","ex":"We communicate in English.","trans":"我們用英文溝通。"},{"en":"successful","zh":"成功的","ex":"She is a successful student.","trans":"她是一位成功的學生。"},{"en":"independent","zh":"獨立的","ex":"I want to be more independent.","trans":"我想變得更獨立。"}];
+const questions=[
+{q:"improve 是什麼意思？",opts:["邀請","改善；進步","借入"],a:"改善；進步",why:"improve = 改善、進步。"},
+{q:"「準備」的英文是哪一個？",opts:["prepare","remember","decide"],a:"prepare",why:"prepare = 準備。"},
+{q:"borrow 是什麼意思？",opts:["選擇","練習","借入"],a:"借入",why:"borrow = 向別人借入。"},
+{q:"「重要的」是哪個英文？",opts:["difficult","important","popular"],a:"important",why:"important = 重要的。"},
+{q:"invite 是什麼意思？",opts:["邀請","忘記","解釋"],a:"邀請",why:"invite = 邀請。"}
+];
+const dialogues=[
+{q:"Hello! What would you like?",hint:"你想點一杯果汁，可以說：I'd like...",opts:["I'd like some juice, please.","I am a juice.","Yesterday juice."],a:"I'd like some juice, please.",reply:"Great! One juice, please. Anything else?"},
+{q:"What size would you like?",hint:"你想要大杯，可以說：A large...",opts:["I large like.","A large one, please.","Large yesterday."],a:"A large one, please.",reply:"Sure! A large juice. That will be five dollars."},
+{q:"Here you are!",hint:"拿到飲料時，可以說謝謝。",opts:["Thank you!","I am five.","Good night yesterday."],a:"Thank you!",reply:"You're welcome! Have a nice day!"}
+];
+let wi=0,shown=false,qi=0,selectedQuiz="",quizScore=0,quizAnswered=false,di=0,selectedDialogue="",dialogueAnswered=false;
+const $=id=>document.getElementById(id);
+document.querySelectorAll(".tab").forEach(btn=>btn.addEventListener("click",()=>{
+ document.querySelectorAll(".tab").forEach(b=>b.classList.toggle("active",b===btn));
+ ["words","quiz","dialogue"].forEach(id=>$(id).classList.toggle("hidden",id!==btn.dataset.page));
+}));
+function renderWord(){const w=words[wi];$("word-count").textContent=`${wi+1} / ${words.length}`;$("word-en").textContent=w.en;$("word-zh").textContent=w.zh;$("word-ex").textContent=w.ex;$("word-trans").textContent=w.trans;$("word-details").classList.toggle("hidden",!shown);$("word-prompt").classList.toggle("hidden",shown);$("reveal").textContent=shown?"隱藏答案":"顯示中文與例句";$("prev-word").disabled=wi===0;}
+$("reveal").onclick=()=>{shown=!shown;renderWord()};
+$("prev-word").onclick=()=>{wi=Math.max(0,wi-1);shown=false;renderWord()};
+$("next-word").onclick=()=>{wi=(wi+1)%words.length;shown=false;renderWord()};
+function renderQuiz(){const q=questions[qi];$("quiz-count").textContent=`第 ${qi+1} / ${questions.length} 題`;$("quiz-question").textContent=q.q;$("quiz-options").innerHTML="";q.opts.forEach(opt=>{const b=document.createElement("button");b.className="option";b.textContent=opt;b.onclick=()=>{if(quizAnswered)return;selectedQuiz=opt;document.querySelectorAll("#quiz-options .option").forEach(x=>x.classList.toggle("selected",x===b));$("quiz-submit").disabled=false};$("quiz-options").appendChild(b)});$("quiz-feedback").classList.add("hidden");$("quiz-submit").classList.remove("hidden");$("quiz-submit").disabled=true;$("quiz-next").classList.add("hidden");selectedQuiz="";quizAnswered=false;}
+$("quiz-submit").onclick=()=>{if(!selectedQuiz||quizAnswered)return;quizAnswered=true;const q=questions[qi],ok=selectedQuiz===q.a;if(ok)quizScore++;$("quiz-feedback").innerHTML=`<div class="${ok?"correct":"incorrect"}">${ok?"答對了！🎉":"再加油！正確答案是："+q.a}</div><div>${q.why}</div>`;$("quiz-feedback").classList.remove("hidden");$("quiz-submit").classList.add("hidden");$("quiz-next").classList.remove("hidden");$("quiz-next").textContent=qi===questions.length-1?"查看成績":"下一題";};
+$("quiz-next").onclick=()=>{if(qi<questions.length-1){qi++;renderQuiz()}else{$("quiz-play").classList.add("hidden");$("quiz-result").classList.remove("hidden");$("final-score").textContent=`${quizScore} / ${questions.length}`;$("score-message").textContent=quizScore===questions.length?"太棒了！全部答對！":"再複習單字一次，然後挑戰看看！"}};
+$("restart-quiz").onclick=()=>{qi=0;quizScore=0;$("quiz-play").classList.remove("hidden");$("quiz-result").classList.add("hidden");renderQuiz()};
+function renderDialogue(){const d=dialogues[di];$("dialogue-question").textContent=d.q;$("dialogue-options").innerHTML="";d.opts.forEach(opt=>{const b=document.createElement("button");b.className="option";b.textContent=opt;b.onclick=()=>{if(dialogueAnswered)return;selectedDialogue=opt;document.querySelectorAll("#dialogue-options .option").forEach(x=>x.classList.toggle("selected",x===b));$("dialogue-submit").disabled=false};$("dialogue-options").appendChild(b)});$("dialogue-feedback").classList.add("hidden");$("dialogue-submit").classList.remove("hidden");$("dialogue-submit").disabled=true;$("dialogue-next").classList.add("hidden");selectedDialogue="";dialogueAnswered=false;}
+$("dialogue-submit").onclick=()=>{if(!selectedDialogue||dialogueAnswered)return;dialogueAnswered=true;const d=dialogues[di],ok=selectedDialogue===d.a;$("dialogue-feedback").innerHTML=`<div class="${ok?"correct":"incorrect"}">${ok?"回答正確！做得很好！🎉":"再試著記住這句："+d.a}</div><div style="margin-top:6px">店員：${d.reply}</div><div class="muted" style="margin-top:6px">提示：${d.hint}</div>`;$("dialogue-feedback").classList.remove("hidden");$("dialogue-submit").classList.add("hidden");$("dialogue-next").classList.remove("hidden");};
+$("dialogue-next").onclick=()=>{di=(di+1)%dialogues.length;renderDialogue()};
+renderWord();renderQuiz();renderDialogue();
+</script>
+</body>
+</html>
